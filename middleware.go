@@ -4,8 +4,10 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -40,6 +42,8 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 	return func(fn Operation) http.Handler {
 		handler := validateImage(Middleware(imageController(o, fn), o), o)
+
+		handler = processV2Pipeline(handler, o)
 
 		if o.EnableURLSignature {
 			return validateURLSignature(handler, o)
@@ -161,6 +165,89 @@ func getCacheControl(ttl int) string {
 
 func isPublicPath(path string) bool {
 	return path == "/" || path == "/health" || path == "/form"
+}
+
+func isEncodedAttr(attr string) bool {
+	encodeAttrs := []string{"image"}
+	for _, encodeAttr := range encodeAttrs {
+		if strings.EqualFold(encodeAttr, attr) {
+			return true
+		}
+	}
+	return false
+}
+
+func decodeAttrVal(val string) string {
+	decoded, err := base64.StdEncoding.DecodeString(val)
+	if err != nil {
+		return ""
+	}
+	return string(decoded)
+}
+
+func isReservedAttr(attr string) bool {
+	reservedAttrs := []string{"file", "url"}
+	for _, v := range reservedAttrs {
+		if v == attr {
+			return true
+		}
+	}
+	return false
+}
+
+func processV2Pipeline(next http.Handler, o ServerOptions) http.Handler  {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/v2pipeline" {
+			pipelineOpts := make(map[string]PipelineOperation)
+
+			var reservedQueryString string
+			query := r.URL.Query()
+			i := 0
+			for op, _ := range query {
+				if isReservedAttr(op) {
+					reservedQueryString += "&" + op + "=" + query.Get(op)
+					continue
+				}
+
+				opParams := strings.Split(query.Get(op), "/")
+				params := make(map[string]interface{})
+
+				for _, opParam := range opParams {
+					opParamKV := strings.SplitN(opParam, "_", 2)
+					if len(opParamKV) == 2 {
+						attr := opParamKV[0]
+						val  := opParamKV[1]
+						if isEncodedAttr(attr) {
+							val = decodeAttrVal(val)
+						}
+						params[attr] = val
+					}
+				}
+
+				if len(params) > 0 {
+					i++
+					pipelineOpts[string(i)] = PipelineOperation{
+						Name:          op,
+						IgnoreFailure: true,
+						Params:        params,
+					}
+				}
+			}
+			if len(pipelineOpts) > 0 {
+				opts := make([]PipelineOperation, len(pipelineOpts))
+				for _, v := range pipelineOpts {
+					opts = append(opts, v)
+				}
+
+				if op, err := json.Marshal(opts); err != nil {
+					r.Clone(r.Context())
+					r.URL.Path = o.PathPrefix + "/pipeline"
+					r.URL.RawQuery = "json=" + url.QueryEscape(string(op)) + reservedQueryString
+				}
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
 func validateURLSignature(next http.Handler, o ServerOptions) http.Handler {
