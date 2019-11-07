@@ -203,7 +203,7 @@ func processV2Pipeline(next http.Handler, o ServerOptions) http.Handler  {
 			var reservedQueryString string
 			query := r.URL.Query()
 			i := 0
-			for op, _ := range query {
+			for op := range query {
 				if isReservedAttr(op) {
 					reservedQueryString += "&" + op + "=" + query.Get(op)
 					continue
@@ -240,7 +240,7 @@ func processV2Pipeline(next http.Handler, o ServerOptions) http.Handler  {
 				}
 
 				if op, err := json.Marshal(opts); err != nil {
-					r.Clone(r.Context())
+//					r.Clone(r.Context())
 					r.URL.Path = o.PathPrefix + "/pipeline"
 					r.URL.RawQuery = "json=" + url.QueryEscape(string(op)) + reservedQueryString
 				}
