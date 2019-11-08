@@ -198,11 +198,9 @@ func isReservedAttr(attr string) bool {
 func processV2Pipeline(next http.Handler, o ServerOptions) http.Handler  {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/v2pipeline" {
-			pipelineOpts := make(map[string]PipelineOperation)
-
+			opts := make([]PipelineOperation, 0)
 			var reservedQueryString string
 			query := r.URL.Query()
-			i := 0
 			for op := range query {
 				if isReservedAttr(op) {
 					reservedQueryString += "&" + op + "=" + query.Get(op)
@@ -225,25 +223,18 @@ func processV2Pipeline(next http.Handler, o ServerOptions) http.Handler  {
 				}
 
 				if len(params) > 0 {
-					i++
-					pipelineOpts[string(i)] = PipelineOperation{
+					opts = append(opts, PipelineOperation{
 						Name:          op,
 						IgnoreFailure: true,
 						Params:        params,
-					}
+					})
 				}
 			}
-			if len(pipelineOpts) > 0 {
-				opts := make([]PipelineOperation, len(pipelineOpts))
-				for _, v := range pipelineOpts {
-					opts = append(opts, v)
-				}
 
-				if op, err := json.Marshal(opts); err != nil {
-//					r.Clone(r.Context())
-					r.URL.Path = o.PathPrefix + "/pipeline"
-					r.URL.RawQuery = "json=" + url.QueryEscape(string(op)) + reservedQueryString
-				}
+			if op, err := json.Marshal(opts); err == nil {
+				r.URL.Path = o.PathPrefix + "pipeline"
+				urlSafeEncodedJson := strings.Replace(url.QueryEscape(string(op)), "+", "%20", -1)
+				r.URL.RawQuery = "operations=" + urlSafeEncodedJson + reservedQueryString
 			}
 		}
 		next.ServeHTTP(w, r)
