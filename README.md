@@ -99,7 +99,11 @@ See [Dockerfile](https://github.com/h2non/imaginary/blob/master/Dockerfile) for 
 
 Fetch the image (comes with latest stable Go and `libvips` versions)
 ```
+// 原始镜像
 docker pull h2non/imaginary
+
+// 支持v2pipeline的定制镜像 (如果使用定制镜像，则下面的基于 h2non/imaginary 的操作，请自行替换为 bostin/imaginary:0.0.1 镜像)
+docker pull bostin/imaginary:0.0.1
 ```
 
 Start the container with optional flags (default listening on port 9000)
@@ -1074,7 +1078,7 @@ http://image.com/v2pipeline?url=https://img0.sc115.com/uploads/sc/jpgs/05/xpic68
 
 
 // 本地图片resize + watermarkimage
-http://image.com/v2pipeline?file=product/images/1.jpg&resize=width_100/height_100/extend_background/background_255,255,255&watermark=text_你好%20啊啊啊/color_255,0,0&watermarkimage=image_
+http://image.com/v2pipeline?file=product/images/1.jpg&resize=width_100/height_100/extend_background/background_255,255,255&watermarkimage=image_aHR0cHM6Ly9pbWcwLnNjMTE1LmNvbS91cGxvYWRzL3NjL2pwZ3MvMDUveHBpYzY4MTNfc2MxMTUuY29tLmpwZw==
 ```
 
 
