@@ -1051,6 +1051,34 @@ Self-documented JSON operation schema:
 ]
 ```
 
+#### GET /v2pipeline
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+**Note**: 该操作是`/pipeline`的定制版本. pipeline 支持的操作，该接口也均支持。具体使用方式，请参考下方的示例。
+
+**Note**: `watermarkimage` 操作需要注意. 原接口中watermarkimage的image参数只要是url即可，但是在作为`v2pipeline`的参数的时候，需要对image的url值进行base64 encode操作，图片服务会在拿到该值之后进行base64 decode获取原始url值
+
+##### Allowed params
+
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
+- {operation_name} `string` 需要执行的操作。操作对应的参数之间以`/`为分割符，参数名称与参数值之间使用`_`分割 （具体见下面示例）
+
+###### Example
+```
+// 本地图片resize + watermark
+http://image.com/v2pipeline?file=product/images/1.jpg&resize=width_100/height_100/extend_background/background_255,255,255&watermark=text_你好%20啊啊啊/color_255,0,0
+
+// URL图片resize + watermark
+http://image.com/v2pipeline?url=https://img0.sc115.com/uploads/sc/jpgs/05/xpic6813_sc115.com.jpg&resize=width_100/height_100/extend_background/background_255,255,255&watermark=text_你好%20啊啊啊/color_255,0,0
+
+
+// 本地图片resize + watermarkimage
+http://image.com/v2pipeline?file=product/images/1.jpg&resize=width_100/height_100/extend_background/background_255,255,255&watermark=text_你好%20啊啊啊/color_255,0,0&watermarkimage=image_
+```
+
+
+
 #### GET | POST /watermark
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
