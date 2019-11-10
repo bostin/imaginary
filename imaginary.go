@@ -28,6 +28,7 @@ var (
 	aGzip               = flag.Bool("gzip", false, "Enable gzip compression (deprecated)")
 	aAuthForwarding     = flag.Bool("enable-auth-forwarding", false, "Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors")
 	aEnableURLSource    = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
+	aEnableAWSS3Source  = flag.Bool("enable-awss3-source", false, "Enable AWS S3 image source processing")
 	aEnablePlaceholder  = flag.Bool("enable-placeholder", false, "Enable image response placeholder to be used in case of error")
 	aEnableURLSignature = flag.Bool("enable-url-signature", false, "Enable URL signature (URL-safe Base64-encoded HMAC digest)")
 	aURLSignatureKey    = flag.String("url-signature-key", "", "The URL signature key (32 characters minimum)")
@@ -62,6 +63,7 @@ Usage:
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
+	imaginary -enable-awss3-source
   imaginary -enable-placeholder
   imaginary -enable-url-source -placeholder ./placeholder.jpg
   imaginary -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997
@@ -84,6 +86,7 @@ Options:
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Enable remote HTTP URL image source processing
+  -enable-awss3-source      Enable AWS S3 image source processing
   -enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -forward-headers          Forwards custom headers to the image source server. -enable-url-source flag must be defined.
@@ -131,6 +134,7 @@ func main() {
 		CORS:               *aCors,
 		AuthForwarding:     *aAuthForwarding,
 		EnableURLSource:    *aEnableURLSource,
+		EnableAWSS3Source:  *aEnableAWSS3Source,
 		EnablePlaceholder:  *aEnablePlaceholder,
 		EnableURLSignature: *aEnableURLSignature,
 		URLSignatureKey:    urlSignature.Key,
@@ -174,6 +178,11 @@ func main() {
 	// Parse endpoint names to disabled, if present
 	if *aDisableEndpoints != "" {
 		opts.Endpoints = parseEndpoints(*aDisableEndpoints)
+	}
+
+	// Validate AWS S3 param, if present
+	if *aEnableAWSS3Source {
+		checkAWSS3()
 	}
 
 	// Read placeholder image, if required
@@ -256,6 +265,10 @@ func checkMountDirectory(path string) {
 	if path == "/" {
 		exitWithError("cannot mount root directory for security reasons")
 	}
+}
+
+func checkAWSS3() {
+
 }
 
 func checkHTTPCacheTTL(ttl int) {
