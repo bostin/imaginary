@@ -41,6 +41,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
   - [Form data](#form-data)
   - [Params](#params)
   - [Endpoints](#get-)
+- [AWS Config Format](#aws-config-format)
 - [Authors](#authors)
 - [License](#license)
 
@@ -641,6 +642,7 @@ Crop the image by a given width or height. Image ratio is maintained
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - force `bool`
 - rotate `int`
 - embed `bool`
@@ -672,6 +674,7 @@ Crop the image by a given width or height using the [libvips](https://github.com
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - force `bool`
 - rotate `int`
 - embed `bool`
@@ -702,6 +705,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - rotate `int`
@@ -730,6 +734,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - rotate `int`
@@ -762,6 +767,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - rotate `int`
@@ -790,6 +796,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - rotate `int`
@@ -818,6 +825,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - rotate `int`
@@ -848,6 +856,7 @@ The width and height specify a maximum bounding box for the image.
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - rotate `int`
@@ -876,6 +885,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - norotation `bool`
@@ -902,6 +912,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - norotation `bool`
@@ -928,6 +939,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - norotation `bool`
@@ -952,6 +964,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - rotate `int`
@@ -1101,6 +1114,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - rotate `int`
@@ -1130,6 +1144,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - rotate `int`
@@ -1159,6 +1174,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- s3 `string` - Only GET method and if the `-enable-awss3-source` and `-aws-config <path>` flag are present
 - embed `bool`
 - force `bool`
 - norotation `bool`
@@ -1246,6 +1262,20 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 <a href="https://opencollective.com/imaginary/sponsor/27/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/27/avatar.svg"></a>
 <a href="https://opencollective.com/imaginary/sponsor/28/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/28/avatar.svg"></a>
 <a href="https://opencollective.com/imaginary/sponsor/29/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/29/avatar.svg"></a>
+
+
+## AWS Config Format
+- `s3`的请求参数格式: s3=bucket_name/object_key
+```toml
+[s3]
+    [[s3.buckets]]
+    appId=""  # AWS S3 APP_ID
+    appKey="" # AWS S3 SECKET_KEY
+    appToken="" # optional: TOKEN 
+    region="us-east-1" # region
+    name="" # s3 query name 
+    dist="" # AWS S3 real bucket name
+```
 
 ## Authors
 
