@@ -30,6 +30,7 @@ type ServerOptions struct {
 	PathPrefix         string
 	APIKey             string
 	Mount              string
+	AWSConfigPath			 string
 	CertFile           string
 	KeyFile            string
 	Authorization      string

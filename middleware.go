@@ -108,9 +108,11 @@ func validateImage(next http.Handler, o ServerOptions) http.Handler {
 			return
 		}
 
-		if r.Method == http.MethodGet && o.Mount == "" && !o.EnableURLSource {
-			ErrorReply(r, w, ErrMethodNotAllowed, o)
-			return
+		if r.Method == http.MethodGet {
+			if !o.EnableAWSS3Source && (!o.EnableURLSource && o.Mount == "") {
+				ErrorReply(r, w, ErrMethodNotAllowed, o)
+				return
+			}
 		}
 
 		next.ServeHTTP(w, r)

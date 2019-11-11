@@ -36,6 +36,7 @@ var (
 	aMaxAllowedSize     = flag.Int("max-allowed-size", 0, "Restrict maximum size of http image source (in bytes)")
 	aKey                = flag.String("key", "", "Define API key for authorization")
 	aMount              = flag.String("mount", "", "Mount server local directory")
+	aAWSConfigPath      = flag.String("aws-config", "./aws.toml", "AWS config file path")
 	aCertFile           = flag.String("certfile", "", "TLS certificate file path")
 	aKeyFile            = flag.String("keyfile", "", "TLS private key file path")
 	aAuthorization      = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
@@ -63,7 +64,7 @@ Usage:
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
-	imaginary -enable-awss3-source
+	imaginary -enable-awss3-source -aws-config ./aws.toml
   imaginary -enable-placeholder
   imaginary -enable-url-source -placeholder ./placeholder.jpg
   imaginary -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997
@@ -82,6 +83,7 @@ Options:
   -disable-endpoints        Comma separated endpoints to disable. E.g: form,crop,rotate,health [default: ""]
   -key <key>                Define API key for authorization
   -mount <path>             Mount server local directory
+	-aws-config <path>		    AWS config file path
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
@@ -143,6 +145,7 @@ func main() {
 		Concurrency:        *aConcurrency,
 		Burst:              *aBurst,
 		Mount:              *aMount,
+		AWSConfigPath:      *aAWSConfigPath,
 		CertFile:           *aCertFile,
 		KeyFile:            *aKeyFile,
 		Placeholder:        *aPlaceholder,
@@ -170,6 +173,11 @@ func main() {
 		checkMountDirectory(*aMount)
 	}
 
+	// Check if the aws config exists, if present
+	if *aAWSConfigPath != "" {
+		checkAwsConfig(*aAWSConfigPath)
+	}
+
 	// Validate HTTP cache param, if present
 	if *aHTTPCacheTTL != -1 {
 		checkHTTPCacheTTL(*aHTTPCacheTTL)
@@ -178,11 +186,6 @@ func main() {
 	// Parse endpoint names to disabled, if present
 	if *aDisableEndpoints != "" {
 		opts.Endpoints = parseEndpoints(*aDisableEndpoints)
-	}
-
-	// Validate AWS S3 param, if present
-	if *aEnableAWSS3Source {
-		checkAWSS3()
 	}
 
 	// Read placeholder image, if required
@@ -267,8 +270,14 @@ func checkMountDirectory(path string) {
 	}
 }
 
-func checkAWSS3() {
-
+func checkAwsConfig(path string) {
+	src, err := os.Stat(path)
+	if err != nil {
+		exitWithError("error while read aws config: %s", err)
+	}
+	if src.IsDir() {
+		exitWithError("aws config is a director: %s", path)
+	}
 }
 
 func checkHTTPCacheTTL(ttl int) {
