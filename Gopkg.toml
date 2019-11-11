@@ -31,3 +31,11 @@
 [[constraint]]
   name = "gopkg.in/throttled/throttled.v2"
   version = "^2.0"
+
+[[constraint]]
+  name = "github.com/aws/aws-sdk-go"
+  version ="^v1.25"
+
+[[constraint]]
+  name = "github.com/BurntSushi/toml"
+  version = "^0.3"
