@@ -22,6 +22,7 @@ type AWSS3Config struct {
 type AWSS3Bucket struct {
 	Name string
 	Dist string
+	Prefix string
 
 	AppId    string
 	AppKey   string
@@ -71,7 +72,7 @@ func (s *AWSS3ImageSource) fetchImage(r *http.Request) ([]byte, error) {
 	buf := &aws.WriteAtBuffer{}
 	_, err := downloader.Download(buf, &s3.GetObjectInput{
 		Bucket: aws.String(bConf.Dist),
-		Key:    aws.String(key),
+		Key:    aws.String(strings.Trim(bConf.Prefix, "/") + "/" + strings.TrimPrefix(key, "/")),
 	})
 	if err != nil {
 		return nil, err
