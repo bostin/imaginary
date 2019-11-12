@@ -1,11 +1,17 @@
-version: "3"
-
+version: "3.7"
 services:
   imaginary:
-    image: h2non/imaginary
+    image: bostin/imaginary:0.0.3
+    volumes:
+      - /var/www/http/image_server:/mnt/data
+      - /usr/local/etc/imaginary/aws.toml:/etc/imaginary/aws.toml
     ports:
-      - "8088:8088"
+      - 9090:9000
     environment:
-      - PORT=8088
-    command: -concurrency 50 -enable-url-source
+      - "VIPS_CONCURRENCY=50"
+    command: -enable-url-source -mount /mnt/data -concurrency 50 -enable-awss3-source -aws-config /etc/imaginary/aws.toml
+    networks:
+      - network
 
+networks:
+  network:
