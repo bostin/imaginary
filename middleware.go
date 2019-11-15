@@ -188,7 +188,7 @@ func decodeAttrVal(val string) string {
 }
 
 func isReservedAttr(attr string) bool {
-	reservedAttrs := []string{"file", "url"}
+	reservedAttrs := []string{"file", "url", "s3"}
 	for _, v := range reservedAttrs {
 		if v == attr {
 			return true
