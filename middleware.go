@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -236,8 +237,13 @@ func processV2Pipeline(next http.Handler, o ServerOptions) http.Handler  {
 			if op, err := json.Marshal(opts); err == nil {
 				r.URL.Path = o.PathPrefix + "pipeline"
 				urlSafeEncodedJson := strings.Replace(url.QueryEscape(string(op)), "+", "%20", -1)
+				log.Printf("op = %s\n", string(op))
+				log.Printf("urlSafeEncodedJson = %s\n", urlSafeEncodedJson)
 				r.URL.RawQuery = "operations=" + urlSafeEncodedJson + reservedQueryString
 			}
+
+			log.Printf("reservedQueryString = %s\n", reservedQueryString)
+			log.Printf("RawQuery = %s\n", r.URL.RawQuery)
 		}
 		next.ServeHTTP(w, r)
 	})
