@@ -64,7 +64,7 @@ Usage:
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
-	imaginary -enable-awss3-source -aws-config ./aws.toml
+  imaginary -enable-awss3-source -aws-config ./aws.toml
   imaginary -enable-placeholder
   imaginary -enable-url-source -placeholder ./placeholder.jpg
   imaginary -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997
@@ -83,7 +83,7 @@ Options:
   -disable-endpoints        Comma separated endpoints to disable. E.g: form,crop,rotate,health [default: ""]
   -key <key>                Define API key for authorization
   -mount <path>             Mount server local directory
-	-aws-config <path>		    AWS config file path
+  -aws-config <path>		    AWS config file path
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
