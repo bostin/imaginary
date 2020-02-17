@@ -1073,7 +1073,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 **Note**: 该操作是`/pipeline`的定制版本. pipeline 支持的操作，该接口也均支持。具体使用方式，请参考下方的示例。
 
-**Note**: `watermarkimage` 操作需要注意. 原接口中watermarkimage的image参数只要是url即可，但是在作为`v2pipeline`的参数的时候，需要对image的url值进行base64 encode操作，图片服务会在拿到该值之后进行base64 decode获取原始url值
+**Note**: `watermarkimage` 操作需要注意. 原接口中watermarkimage的image参数只要是url即可，但是在作为`v2pipeline`的参数的时候，需要对image的url值进行URL-safe Base64-encode操作，图片服务会在拿到该值之后进行base64 decode获取原始url值
 
 ##### Allowed params
 

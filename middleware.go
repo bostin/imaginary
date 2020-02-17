@@ -180,7 +180,7 @@ func isEncodedAttr(attr string) bool {
 }
 
 func decodeAttrVal(val string) string {
-	decoded, err := base64.URLEncoding.DecodeString(val)
+	decoded, err := base64.RawURLEncoding.DecodeString(val)
 	if err != nil {
 		return ""
 	}
