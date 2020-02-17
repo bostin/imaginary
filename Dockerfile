@@ -47,8 +47,8 @@ COPY . .
 RUN rm -rf vendor && dep ensure
 
 # Run quality control
-RUN GO111MODULE=off go test -test.v -test.race -test.covermode=atomic ./...
-RUN GO111MODULE=off golangci-lint run ./...
+#RUN GO111MODULE=off go test -test.v -test.race -test.covermode=atomic ./...
+#RUN GO111MODULE=off golangci-lint run ./...
 
 # Compile imaginary
 RUN GO111MODULE=off go build -a \
@@ -60,7 +60,7 @@ FROM debian:stretch-slim
 
 ARG IMAGINARY_VERSION
 
-LABEL maintainer="tomas@aparicio.me" \
+LABEL maintainer="tomas@aparicio.me, forked by wangbo78978@126.com" \
       org.label-schema.description="Fast, simple, scalable HTTP microservice for high-level image processing with first-class Docker support" \
       org.label-schema.schema-version="1.0" \
       org.label-schema.url="https://github.com/h2non/imaginary" \
