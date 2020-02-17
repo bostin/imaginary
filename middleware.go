@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/hmac"
 	"crypto/sha256"
-	"encoding/base32"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -181,7 +180,7 @@ func isEncodedAttr(attr string) bool {
 }
 
 func decodeAttrVal(val string) string {
-	decoded, err := base32.StdEncoding.DecodeString(val)
+	decoded, err := base64.URLEncoding.DecodeString(val)
 	if err != nil {
 		return ""
 	}
