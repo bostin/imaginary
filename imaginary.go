@@ -174,7 +174,7 @@ func main() {
 	}
 
 	// Check if the aws config exists, if present
-	if *aAWSConfigPath != "" {
+	if *aEnableAWSS3Source && *aAWSConfigPath != "" {
 		checkAwsConfig(*aAWSConfigPath)
 	}
 
