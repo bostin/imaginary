@@ -7,7 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -20,14 +22,17 @@ type AWSS3Config struct {
 }
 
 type AWSS3Bucket struct {
-	Name string
-	Dist string
+	Name   string
+	Dist   string
 	Prefix string
 
 	AppId    string
 	AppKey   string
 	AppToken string
 	Region   string
+
+	EnableLocal bool
+	LocalDir    string
 }
 
 const AWSS3UrlQueryKey string = "s3"
@@ -68,6 +73,19 @@ func (s *AWSS3ImageSource) fetchImage(r *http.Request) ([]byte, error) {
 		return nil, ErrNotFound
 	}
 
+	if bConf.EnableLocal {
+		localPath := strings.TrimRight(bConf.LocalDir, "/") + "/" + strings.TrimLeft(key, "/")
+		f, e := os.OpenFile(localPath, os.O_RDONLY, os.ModePerm)
+		if e == nil && f != nil {
+			defer f.Close()
+			var buf []byte
+			if n, e := f.Read(buf); e != nil && n > 0 {
+				log.Println("hint local")
+				return buf, nil
+			}
+		}
+	}
+
 	downloader := s.newAWSS3Downloader(bConf)
 	buf := &aws.WriteAtBuffer{}
 	_, err := downloader.Download(buf, &s3.GetObjectInput{
@@ -77,6 +95,7 @@ func (s *AWSS3ImageSource) fetchImage(r *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Println("hint a3")
 	return buf.Bytes(), nil
 }
 
