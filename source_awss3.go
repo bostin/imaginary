@@ -79,7 +79,7 @@ func (s *AWSS3ImageSource) fetchImage(r *http.Request) ([]byte, error) {
 		if e == nil && f != nil {
 			defer f.Close()
 			var buf []byte
-			if n, e := f.Read(buf); e != nil && n > 0 {
+			if n, e := f.Read(buf); e == nil && n > 0 {
 				log.Println("hint local")
 				return buf, nil
 			}
@@ -95,7 +95,7 @@ func (s *AWSS3ImageSource) fetchImage(r *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Println("hint a3")
+	log.Println("hint s3")
 	return buf.Bytes(), nil
 }
 
